@@ -1,0 +1,5 @@
+skill,experience,level,tip,date
+txt,5,1,read.table(),Apr-17
+csv,5,1,readxl::read_csv(),Jun-17
+Excel,5,1,readxl::read_xls,Jun-17
+HTML,5,1,httr::GET,Jun-17

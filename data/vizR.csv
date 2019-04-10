@@ -1,0 +1,7 @@
+skill,experience,level,tip,date
+Base plots,5,1,,Apr-17
+ggplot syntax,5,1,ggplot2,Apr-17
+ggplot themes,3,3,"ggplot2::theme_*, Own theme gist",Jun-17
+Interactive plots,3,3,"ggiraph, visNetwork",Feb-18
+Spatial plots,3,5," leaflet, sf",Nov-17
+Networks,3,3,,Jun-18

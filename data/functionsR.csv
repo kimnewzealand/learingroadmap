@@ -1,0 +1,5 @@
+skill,experience,level,tip,date
+Create a function,3,1,function (x) { },Apr-17
+Vector functions,3,1,"sum(), mean(), sd(), summary(), length(), unique(), table()",Apr-17
+Scoping rules,3,3,Lexical scoping,Apr-17
+Functional programming,3,3,purrr,Apr-17

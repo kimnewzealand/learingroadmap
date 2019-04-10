@@ -1,0 +1,12 @@
+skill,experience,level,tip,date
+Numerical Indexing,3,3,"[row,column], [[list]]",Apr-17
+Logical Indexing,3,3,"operators, & (and), | (or), %in%, is.na(), which()",Apr-17
+Missing values,3,3,is.na(),Apr-17
+Variable manipulation,3,3,dplyr::select(),Apr-17
+Sorting,3,3,dplyr::order(decreasing = TRUE),Apr-17
+Combine relational,3,3,"merge(x,y,by=,all=), dplyr::left_join(), spatial sf:st_join",Apr-17
+Summarise,3,3,"aggregate(), dplyr::group_by() dplyr::summarise(n=n())",Apr-17
+Recoding,3,3,,Jun-17
+Reshape,3,5,"matrix(unlist(row,ncol))",Feb-19
+Tidy data,3,5,tidyr::gather() tidyr::spread(),Jun-17
+Regex,3,5,stringr,Jun-17

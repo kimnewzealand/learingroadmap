@@ -1,0 +1,13 @@
+skill,experience,level,tip,date
+Object assignment,5,1,,Apr-17
+Classes,5,1,,Apr-17
+Scaler,5,1,,Apr-17
+Vectors,5,1,"c(), a:b, seq(), rep()",Apr-17
+Factors,5,1,forcats,Apr-17
+Matrices,5,1,Feb-19 Use for dataframe manipulation,Apr-17
+Arrays,5,1,,Apr-17
+Dataframes,5,1,"data.frame(name = c(),... )",Apr-17
+Lists,3,3,,Apr-17
+Environments,3,3,,Sep-17
+Tibbles,3,3,,Jan-18
+Dates,3,5,lubridate,Apr-17

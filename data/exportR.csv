@@ -1,0 +1,4 @@
+skill,experience,level,tip,date
+txt,5,1,write.table(),Apr-17
+csv,5,1,readxl::write_csv(),Jun-17
+Excel,5,1,readxl::write_xls,Jun-17

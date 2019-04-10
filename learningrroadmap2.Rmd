@@ -1,0 +1,358 @@
+---
+title: "Interactive Learning Roadmap - Part 2"
+date: '2019-03-13'
+slug: learning2
+tags:
+- R
+- Viz
+categories: Post
+---
+
+
++ [Introduction](#introduction)
++ [Data](#data)
++ [Fundamentals of Data Visualisation](#fundamentals-of-data-visualisation)
++ [Final Visualisations](#final-visualisations)
++ [Conclusions](#conclusions)
++ [References](#references)
+
+## Introduction
+
+This post creates and reviews at visualisation objects considering the [fundamentals of data visualisation](https://serialmentor.com/dataviz/) book;
+
+> Data visualization is part art and part science. The challenge is to get the art right without getting the science wrong and vice versa
+
+Learning R is a bit of a journey over time so here goes **Part 2** of an interactive visualisation project using tidyverse and ggplot compatible^1^ packages.  See [Part 1 here](https://kimnewzealand.github.io/2019/03/04/learning/).
+
+ 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,warning=FALSE)
+```
+
+```{r packages, message=FALSE, warning=FALSE}
+# install.packages("tidyverse")
+library(tidyverse)
+library(ggiraph)
+# install.packages("ggiraphExtra")
+library(ggiraphExtra)
+library(tidygraph)
+library(ggraph)
+library(visNetwork)
+```
+
+
+## Data
+
+Create the dataframes for the skills groupings. The experience levels ( changed from complexity) have been updated from  1:6 to  1:3 which seems more intuitive since [Part 1](https://kimnewzealand.github.io/2019/03/04/learning/#data). However these are by no means representative of a complete skill set, only as a point in time.
+
+```{r create data}
+# Create dataframes
+setupR <- data.frame(skill=c("Install RStudio", "Install R", "Install R packages", "Load Packages", "Update RStudio", "Update R", "Update R packages", "Basic debugging", "Browser debugging"),
+                     experience=c(5,5,5,5,5,3,5,3,1),
+                     level=c(1,1,1,1,1,1,3,1,3),
+                     tip=c("Download from RStudio website", "", "CRAN install.packages(), GitHub devtools, Jan-19 remotes ", "", "Nov-18 RStudio packages tab", "","", "Apr-17 Misspelling and punctuation errors, traceback()", "debug()"),
+                     date=c("Apr-17", "Apr-17", "Apr-17", "Apr-17", "Apr-17", "Apr-17", "Nov-18", "Apr-17", ""),
+                     stringsAsFactors = FALSE)
+
+objectsR <- data.frame(skill=c("Object assignment", "Classes", "Scaler", "Vectors", "Factors", "Matrices", "Arrays", "Dataframes", "Lists", "Environments", "Tibbles", "Dates"),
+                       experience=c(5,5,5,5,5,5,5,5,3,3,3,3),
+                       level=c(1,1,1,1,1,1,1,1,3,3,3,5),
+                       tip=c( "","", "","c(), a:b, seq(), rep()","forcats", "Feb-19 Use for dataframe manipulation","" ,"data.frame(name = c(),... )" ,"" ,"","" ,"lubridate"), 
+                       date=c("Apr-17", "Apr-17", "Apr-17", "Apr-17", "Apr-17", "Apr-17", "Apr-17", "Apr-17", "Apr-17", "Sep-17", "Jan-18", "Apr-17"),
+                       stringsAsFactors = FALSE)
+
+functionsR <- data.frame(skill=c("Create a function", "Vector functions", "Scoping rules", "Functional programming"),
+                        experience=c(3,3,3,3),
+                        level=c(1,1,3,3),
+                        tip=c("function (x) { }", "sum(), mean(), sd(), summary(), length(), unique(), table()", "Lexical scoping", "purrr"),
+                        date=c("Apr-17", "Apr-17"),
+                        stringsAsFactors = FALSE)
+
+importR <- data.frame(skill=c( "txt", "csv", "Excel","HTML"),
+                      experience=c(5,5,5,5),
+                      level=c(1,1,1,1),
+                      tip=c("read.table()" , "readxl::read_csv()", "readxl::read_xls","httr::GET"),
+                      date=c("Apr-17", "Jun-17", "Jun-17", "Jun-17"),
+                      stringsAsFactors = FALSE)
+
+exportR <- data.frame(skill=c( "txt", "csv", "Excel"),
+                      experience=c(5,5,5),
+                      level=c(1,1,1),
+                      tip=c("write.table()" ,"readxl::write_csv()", "readxl::write_xls"),
+                      date=c("Apr-17","Jun-17", "Jun-17"),
+                      stringsAsFactors = FALSE)
+
+datamungingR <- data.frame(skill=c("Numerical Indexing", "Logical Indexing", "Missing values", "Variable manipulation", "Sorting" ,"Combine relational", "Summarise", "Recoding", "Reshape", "Tidy data", "Regex"),
+                           experience=c(3,3,3,3,3,3,3,3,3,3,3),
+                           level=c(3,3,3,3,3,3,3,3,5,5,5),
+                           tip=c("[row,column], [[list]]","operators, & (and), | (or), %in%, is.na(), which()","is.na()","dplyr::select()", "dplyr::order(decreasing = TRUE)", "merge(x,y,by=,all=), dplyr::left_join(), spatial sf:st_join", "aggregate(), dplyr::group_by() dplyr::summarise(n=n())", "","matrix(unlist(row,ncol))", "tidyr::gather() tidyr::spread()", "stringr"),
+                           date=c("Apr-17", "Apr-17", "Apr-17", "Apr-17", "Apr-17", "Apr-17","Apr-17", "Jun-17", "Feb-19", "Jun-17", "Jun-17"),
+                           stringsAsFactors = FALSE)
+
+vizR <- data.frame(skill=c( "Base plots", "ggplot syntax","ggplot themes", "Interactive plots","Spatial plots","Networks"),
+                   experience=c(5,5,3,3,3,3),
+                   level=c(1,1,3,3,5,3),
+                   tip=c("","ggplot2", "ggplot2::theme_*, Own theme gist", "ggiraph, visNetwork"," leaflet, sf",""),
+                   date=c("Apr-17", "Apr-17", "Jun-17", "Feb-18","Nov-17","Jun-18"),
+                   stringsAsFactors = FALSE)
+publishR <- data.frame(skill=c("R Markdown","R packages","Blog"),
+                   experience=c(5,3,5),
+                   level=c(1,5,5),
+                   tip=c("","devtool","blogdown and GitKraken"),
+                   date=c("Apr-17","Nov-18","Jan-18"),
+                   stringsAsFactors = FALSE)
+statsR <- data.frame(skill=c("Summary statistics", "Statistical inference", "Linear regression models", "Logistic regression"),
+                   experience=c(3,3,3,3),
+                   level=c(1,3,3,3),
+                   tip=c("tibble::glimpse", "", "",""),
+                   date=c("Apr-17", "Apr-17", "Apr-17", "Apr-17"),
+                   stringsAsFactors = FALSE)
+
+```
+
+
+Take a look at the structure of the first data frame `setupR` using glimpse from the [tibble](https://cran.r-project.org/web/packages/tibble/index.html).
+
+```{r str data}
+# Summary of setupR dataframe
+glimpse(setupR)
+```
+
+
+## Fundamentals of Data Visualisation
+
+Let's review and critique the [first roadmap exploratory plots](https://kimnewzealand.github.io/2019/03/04/learning/#first-roadmap) again using the following problematic visual guidelines from the book:
+
+> **ugly** - A figure that has aesthetic problems but otherwise is clear and informative  
+ **bad** - A figure that has problems related to perception; it may be unclear, confusing, overly complicated, or deceiving  
+ **wrong** - A figure that has problems related to mathematics; it is objectively incorrect  
+ 
+As an individual line plot of a skill set group, these to not fall under problematic so they are acceptable although the labels are at 90 degrees. The labels are rotated to remove the overlap with the default plot options, although ideally text would be horizontal.
+
+Line plots use Cartesian coordinate system with x and y values. In [Part 1](https://kimnewzealand.github.io/2019/03/04/learning/#exploratory-data-analysis) we also experimented with Polar coordinate system with curved axes using a radar chart.
+
+> Polar coordinates can be useful for data of a periodic nature.  For example, consider the days in a year. 
+
+Although it seemed the reason the radar chart wouldn't work was multiple overlays may be too complex, it seems that in fact it would become the `wrong` choice of chart as a learning journey is not periodic, but open ended. Therefore Cartesian coordinates may be more appropriate in this project.
+
+The combination object with multiple lines appears to be a `bad` plot, it the stacked ggplot objects are overlapping, confusing and unclear.
+
+## Final Visualisations
+
+### Visualisation Requirements
+
+Now that we understand the data better, and explored different layouts,  what do we need in our final publish visualisation?
+
+- Skills and skill groupings are relational so we need these as objects,
+- Skills are connected objects, so we will need line connections,
+- There is some directionality between objects,
+- However skills and skill set groupings are not all sequential, and the groupings may need to be spliced together,
+- Skills, tips and groupings need to be identifiable with labels/ text,
+- Experience and level needs to be identifiable but since they are numeric these can be represented by text, shapes or colours,
+- The output needs to be scalable as more data is added.
+
+Let's see if network graphs meet these requirements.
+
+### Network Graphs
+
+Although the data is actually connected and seems relational, the relationships between each dataframe is not currently captured. According to the [tidygraph release notes](https://www.data-imaginist.com/2017/introducing-tidygraph/):
+
+> There's a discrepancy between relational data and the tidy data idea, in that relational data cannot in any meaningful way be encoded as a single tidy data frame. On the other hand, both node and edge data by itself fits very well within the tidy concept as each node and edge is, in a sense, a single observation. Thus, a close approximation of tidyness for relational data is two tidy data frames, one describing the node data and one describing the edge data.
+
+### Static Network Graph
+
+Let's now create the two dataframes for the node data and the edge ( or line links) data following this great [network analysis with R tutorial](https://www.jessesadler.com/post/network-analysis-with-r/).
+
+```{r first nodes and edges}
+# Add id to setupR
+setupR <- setupR %>% 
+      rowid_to_column("id")
+# In the line plots we used the dots for the skills, so create nodes_1 for each of the skills with unique ids, and the node name as label
+(nodes_1 <- tibble(label=setupR$skill) %>% 
+      # Adds a column with the values from the row ids at the start of the data frame
+      rowid_to_column("id"))
+# Since this dataframe has a sequential route, let's create a route table with from and to ids - this code could be improved later)
+route <- tibble(from = setupR$id,
+                to = c(setupR$id[-1],setupR$id[9]))
+
+(edges_1 <- route %>%  
+            # Use a left join where the key from in route and id in setupR
+            left_join(setupR, by = c("from" = "id")) %>%
+            select(from,to) %>% 
+            # If the edges have magnitude then this is referred to as weight. Initially set the weight as default of 1
+            mutate(weight=1))
+# Skip along the tutorial to the tidygraph and ggraph sections, to create a network object using tbl_graph
+(routes_tidy <- tbl_graph(nodes = nodes_1, edges = edges_1, directed = TRUE))
+# Take a look the class of this routes_tidy object
+class(routes_tidy)
+# Set seed for reproduceability of graph
+set.seed(123)
+# Now use the ggraph function to plot the network object
+ggraph(routes_tidy) + 
+      geom_edge_link() +
+      geom_node_text(aes(label = label)) + 
+      geom_node_point() + 
+      theme_graph()
+
+```
+  
+A network graph has the functionality to directly label objects, 
+
+This network graph is static, and not quite ready for publishing. 
+
+### Interactive Network Graph
+
+Let's look to customise further and create an interactive version the network graph.
+
+Let's try the [visNetwork](https://cran.r-project.org/web/packages/visNetwork/index.html) R package to plot an interactive network. Although it is an interface to the  'vis.js' JavaScript library, it is compatible with the tidygraph tidyverse format and syntax.
+
+```{r visNetwork}
+# As per the documentation, nodes must be a dataframe with least one column id, and edges must be a dataframe with at least from and to columns for visNetwork. Plot using the default options
+visNetwork(nodes_1,edges_1) %>% 
+     # The direction of the edges is meaningful so this is a directed network and include arrows
+      visEdges(arrows = "middle") %>%
+      # Set seed for reproduceability of graph
+      visLayout(randomSeed = 123)
+```
+
+### Shapes
+
+This network graph uses [solid and coloured](https://serialmentor.com/dataviz/avoid-line-drawings.html) shapes rather than outlines or small dots as these are easier to perceive. We can also use a different shape for the start of the journey to differentiate the objects and give the reader a starting reference point.
+
+### Colour Scales
+
+We can use [colour to distinguish groups, represent values or to highlight](https://serialmentor.com/dataviz/color-basics.html). For these groups we need to represent the groups so use a qualitative palette. We can look to highlight objects with colour on interactions such as clicks.
+
+```{r colour scale}
+# Define the qualitative colour scale to represent 9 distinctive skill groups using colorbrewer http://colorbrewer2.org/#type=qualitative&scheme=Set1&n=9
+pal <-  RColorBrewer::brewer.pal(9, "Set1")
+```
+
+Next add some attributes to expanded nodes and edges dataframes with all the skill set groupings.
+
+```{r multi nodes and edges}
+# Create the nodes dataframe with the colour group and additional attributes. This code code be improved with a function later to avoid the repetition.
+nodes <- bind_rows(setupR %>%
+                          select(-id) %>% 
+                          mutate(color=rep(pal[1], dim(setupR)[1])) %>%
+                          mutate(group=rep("setupR",dim(setupR)[1])),
+                    objectsR %>%  
+                         mutate(color=rep(pal[2], dim(objectsR)[1]))%>%
+                         mutate(group=rep("objectsR", dim(objectsR)[1])),
+                    importR %>% 
+                         mutate(color=rep(pal[3], dim(importR)[1]))%>%
+                         mutate(group=rep("importR", dim(importR)[1])),
+                    functionsR %>% 
+                         mutate(color=rep(pal[4], dim(functionsR)[1]))%>%
+                         mutate(group=rep("functionsR", dim(functionsR)[1])),
+                    datamungingR %>% 
+                         mutate(color=rep(pal[5], dim(datamungingR)[1])) %>%
+                         mutate(group=rep("datamungingR", dim(datamungingR)[1])),
+                    vizR %>% 
+                         mutate(color=rep(pal[6], dim(vizR)[1]))%>%
+                         mutate(group=rep("vizR", dim(vizR)[1])),
+                    publishR %>%
+                         mutate(color=rep(pal[7], dim(publishR)[1])) %>%
+                         mutate(group=rep("publishR",dim(publishR)[1])),
+                    statsR %>%
+                         mutate(color=rep(pal[8], dim(statsR)[1])) %>%
+                         mutate(group=rep("statsR",dim(statsR)[1]))
+                    )  %>% 
+            rename(label=skill) %>% 
+            # Setting the shape as circle means the labels are inside the circle and the value doesn't work. I would like to keep the labels outside the dot https://stackoverflow.com/questions/39674927/how-have-labels-inside-the-scaled-nodes-in-visnetwork
+            mutate(shape="dot") %>% 
+            rename(value=experience) %>% 
+            # Add a column with the values from the row ids at the start of the data frame
+            rowid_to_column("id")
+# Print using glimpse to view nodes dataframe
+nodes %>%  
+      glimpse()
+# Change the first start node to a square to differentiate the start object from the other skill objects. Use the column name in case the ordering of columns changes
+nodes$shape[1] <- "square"
+# Create the edges with the from and to numeric values
+edges <- tibble(from = nodes$id) %>%
+       # to = c(nodes$id[-1],nodes$id[dim(nodes)[1]])) #old code
+      # Use lead function from dplyr to add column with the next values https://stackoverflow.com/questions/33038240/add-row-value-to-previous-row-value-in-r
+      mutate(to=lead(from)) %>% 
+      # Add default weight variable of 1
+      mutate(weight=1)
+# Update the ends of groupchains so that the 'to' from value is NA. This has been updated using a logical vector and dplyr lead function
+edges$to <- ifelse(nodes$group==lead(nodes$group),
+                       edges$to,
+                       NA)
+# Add splices ie edges for nodes that are interconnected using merge
+splices<- data.frame(splicefrom=c("Load Packages", "Load Packages", "Dataframes", "Dataframes", "Dataframes","Dataframes","Environments","Matrices","Environments","Lists","Vectors"),
+                     spliceto=c("Object assignment", "R Markdown", "Numerical Indexing", "Summary statistics", "Base plots", "txt", "Create Functions","Reshape","Scoping rules","Functional programming","Vector functions"),
+                     stringsAsFactors = FALSE) %>% 
+      merge(.,nodes %>%  select(id,label), by.x="splicefrom", by.y="label") %>% 
+      rename(from=id) %>% 
+      merge(.,nodes %>%  select(id,label), by.x="spliceto", by.y="label") %>% 
+      rename(to=id) %>% 
+      mutate(weight=1) %>% 
+      select(-splicefrom,-spliceto)
+# Now bind the spliced edges to the edges dataframe
+edges <- bind_rows(edges,
+                   splices)
+
+```
+
+Now plot an interactive `visNetwork` again following the very good [visNetwork vignette](https://datastorm-open.github.io/visNetwork/).
+
+```{r visNetwork group}
+# Nodes data.frame for legend
+lnodes <- data.frame(label = c("Start", "Beginner", "Intermediate","Experienced"),
+                     shape = c( "square", "dot","dot","dot"), 
+                     value= c(5,1,3,5),
+                     title = "Skill Experience",  
+                     # Color the non start dots as light grey as this is the non highlight colour
+                     color=c("red", "lightgrey", "lightgrey", "lightgrey"),
+                     id = 1:4)
+# Use the visNetwork function again with value ie the experience as the size of the node
+visNetwork(nodes %>%
+                 # Concatenate the title for the tooltip
+                 mutate(title=paste0("Skill: ",label,
+                                     "<br>Skill Group: ",group, 
+                                     "<br>Tips: ",tip))  ,
+           edges,
+           main =("Interactive Learning Journey Roadmap with R"),
+           submain= ("Use mouse to zoom")) %>% 
+           # Now that we have a legend we can update the submain as the start should be intuitive
+           # submain="Click on the square to start the journey") 
+      visGroups(groupname = group)  %>% 
+      # The direction of the edges is meaningful so for this directed network we will include arrows
+      visEdges(arrows = "middle") %>% 
+      # Create legend for shapes
+      visLegend(addNodes = lnodes,
+                useGroups=FALSE,
+                position="right",
+                main="Skill Experience Categories") %>% 
+      # Add a grouping drop down menu and highlight the nodes on selection
+      visOptions(selectedBy = "group",
+             highlightNearest = TRUE, 
+             nodesIdSelection = FALSE) %>%
+      # Set seed for reproduceability of graph
+      visLayout(randomSeed = 123)
+
+```
+
+Lastly, as variations to the visualisation, we could change the filter menus to highlight the graph by skill level or to make it scalable, edit the graph using the function  `visOptions(manipulation = TRUE)` or use skill function created in Part 1.
+
+
+## Conclusions
+
+
+I have taken a slightly different approach to the [metro style roadmap](http://nirvacana.com/thoughts/wp-content/uploads/2018/01/RoadToDataScientist1.png). The metro map is more sequential and progressive whereas I see more dependencies between skills and have taken a simpler tool specific approach. 
+
+The final graph network in this post achieves the objective of a visual R skill self-assessment, to recognise gaps and capture tooltips. It could also be used as a resume after a quick gap analysis to add any missing skills to the data.
+
+This version is acceptable according to the problematic visual guidelines as it doesn't fall under `ugly`, `bad` or `wrong`. It also meets the visualisation requirements we listed earlier.
+
+Considering the fundamentals of visualisation is not a substitute for a peer review with a designer lens, however it is useful to start a project with these fundamentals to improve communication with an audience during or at the end of a project.
+
+## References
+
+- The [Network Analysis with R](https://www.jessesadler.com/post/network-analysis-with-r/) tutorial by [Jesse Sandler](https://twitter.com/vivalosburros)
+- The [Fundamentals of Data Visualisation](https://serialmentor.com/dataviz/) book by [Claus Wilke](https://twitter.com/ClausWilke)  
+- The [R for Data Science](https://r4ds.had.co.nz/) book by [Hadley Wickham](https://twitter.com/hadleywickham)
+
+^1^ The reason for this compatibility is to focus on and use a single syntax in this roadmap. The tidyverse is based on tidy data principles and ggplot on the grammar of graphics. The final output for this project could then become a framework for separate learning roadmaps for package wrappers for libraries with different syntax (such as plotly) or different languages (such as Python or D3).
